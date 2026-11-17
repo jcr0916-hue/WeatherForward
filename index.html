@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather Forward — Read the map. Trust your forecast.</title>
+  <meta name="description" content="Learn to read the weather maps you see on TV and make your own forecast with confidence." />
+  <style>
+    :root {
+      --bg: #0b1526;
+      --bg-soft: #12213a;
+      --card: #16283f;
+      --text: #eef4fb;
+      --muted: #9fb2c8;
+      --accent: #4fc3f7;
+      --accent-2: #ffd166;
+      --border: rgba(159, 178, 200, 0.18);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+    /* Header */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0;
+    }
+    .logo {
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+    .logo span { color: var(--accent); }
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      margin-left: 24px;
+    }
+    nav a:hover { color: var(--text); }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 88px 0 72px;
+    }
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      max-width: 20ch;
+      margin: 0 auto 24px;
+    }
+    .hero h1 em { font-style: normal; color: var(--accent); }
+    .hero p.sub {
+      font-size: 1.2rem;
+      color: var(--muted);
+      max-width: 56ch;
+      margin: 0 auto 36px;
+    }
+    .cta {
+      display: inline-block;
+      background: var(--accent);
+      color: #06202f;
+      font-weight: 700;
+      padding: 15px 34px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 1.05rem;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+    .cta:hover { transform: translateY(-2px); background: #6fd3ff; }
+    .cta.ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      margin-left: 12px;
+    }
+    .cta.ghost:hover { border-color: var(--muted); }
+
+    /* The gap / promise */
+    .gap {
+      background: var(--bg-soft);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 72px 0;
+    }
+    .gap h2 {
+      font-size: clamp(1.7rem, 3.5vw, 2.3rem);
+      letter-spacing: -0.02em;
+      max-width: 24ch;
+      margin-bottom: 16px;
+    }
+    .gap p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 64ch;
+    }
+    .gap .callout {
+      margin-top: 28px;
+      font-size: 1.25rem;
+      color: var(--text);
+      font-weight: 600;
+    }
+    .gap .callout strong { color: var(--accent-2); }
+
+    /* Core loop */
+    .loop { padding: 80px 0; }
+    .loop h2 {
+      font-size: clamp(1.7rem, 3.5vw, 2.3rem);
+      letter-spacing: -0.02em;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .loop .lead {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 56px;
+    }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .step {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+    }
+    .step .num {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .step h3 {
+      font-size: 1.25rem;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+    .step p { color: var(--muted); font-size: 0.98rem; }
+
+    /* Two phases */
+    .phases { padding: 72px 0; background: var(--bg-soft); border-top: 1px solid var(--border); }
+    .phases h2 {
+      font-size: clamp(1.7rem, 3.5vw, 2.3rem);
+      letter-spacing: -0.02em;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .phase-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .phase {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+    }
+    .phase .tag {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+    }
+    .phase .tag.crafted { background: rgba(79, 195, 247, 0.15); color: var(--accent); }
+    .phase .tag.live { background: rgba(255, 209, 102, 0.15); color: var(--accent-2); }
+    .phase h3 { font-size: 1.4rem; margin-bottom: 10px; letter-spacing: -0.01em; }
+    .phase p { color: var(--muted); font-size: 1rem; }
+
+    /* Email capture */
+    .signup { padding: 80px 0 96px; text-align: center; }
+    .signup h2 {
+      font-size: clamp(1.7rem, 3.5vw, 2.3rem);
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .signup p { color: var(--muted); max-width: 52ch; margin: 0 auto 32px; }
+    .signup form {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .signup input[type="email"] {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--text);
+      padding: 15px 22px;
+      font-size: 1rem;
+      width: 320px;
+      max-width: 100%;
+      outline: none;
+    }
+    .signup input[type="email"]:focus { border-color: var(--accent); }
+    .signup button {
+      background: var(--accent);
+      color: #06202f;
+      border: none;
+      font-weight: 700;
+      padding: 15px 30px;
+      border-radius: 999px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .signup button:hover { background: #6fd3ff; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    @media (max-width: 720px) {
+      .steps, .phase-grid { grid-template-columns: 1fr; }
+      nav a { margin-left: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">Weather<span>Forward</span></div>
+      <nav>
+        <a href="#how">How it works</a>
+        <a href="#learn">Learn</a>
+        <a href="#signup">Get started</a>
+      </nav>
+    </header>
+  </div>
+
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow">Understand the forecast</span>
+      <h1>Read the map.<br />Trust your <em>own</em> forecast.</h1>
+      <p class="sub">
+        That map on the evening news isn't a mystery — it's a story about what the sky
+        will do next. Weather Forward teaches you to read it, and to make your own
+        forecast with real confidence.
+      </p>
+      <a class="cta" href="#signup">Start learning</a>
+      <a class="cta ghost" href="#how">See how it works</a>
+    </div>
+  </section>
+
+  <section class="gap">
+    <div class="wrap">
+      <h2>Knowing what "a 40% chance of rain" means isn't the point. Knowing what <em style="color:var(--accent)">you'd</em> forecast is.</h2>
+      <p>
+        Most weather content either dumps concepts with no application, or just tells you
+        the answer. Weather Forward fills the gap between the two — it turns you from a
+        passive viewer of forecasts into someone who can glance at a map and form their own
+        read.
+      </p>
+      <p class="callout">
+        Learn on real-inspired scenarios, then apply it to <strong>live weather</strong>.
+      </p>
+    </div>
+  </section>
+
+  <section class="loop" id="how">
+    <div class="wrap">
+      <h2>The Weather Forward loop</h2>
+      <p class="lead">Three steps. Repeat until the map starts making sense.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="num">Step 1</div>
+          <h3>Decode</h3>
+          <p>Take a real-looking weather map — fronts, pressure, radar — and break it down piece by piece in plain language.</p>
+        </div>
+        <div class="step">
+          <div class="num">Step 2</div>
+          <h3>Predict</h3>
+          <p>Given what you see, what happens next? Where does the rain go? What does the temperature do?</p>
+        </div>
+        <div class="step">
+          <div class="num">Step 3</div>
+          <h3>Build confidence</h3>
+          <p>See what actually happened, and why your read was right or wrong. Every round sharpens your eye.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="phases" id="learn">
+    <div class="wrap">
+      <h2>Two ways in, one skill out</h2>
+      <div class="phase-grid">
+        <div class="phase">
+          <span class="tag crafted">Stage 1 — Crafted</span>
+          <h3>Scenarios inspired by real weather</h3>
+          <p>
+            Controlled examples built from genuine events, so they feel authentic but strip
+            away the noise. Isolate one skill at a time — temperature, then rain, then wind
+            and storms — and build your foundation.
+          </p>
+        </div>
+        <div class="phase">
+          <span class="tag live">Stage 2 — Live</span>
+          <h3>Real weather, real forecasts</h3>
+          <p>
+            Pick a city, read today's actual conditions, and make a forecast you'll check
+            against the real sky. This is where you learn that forecasting is about
+            confidence, not certainty.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="signup" id="signup">
+    <div class="wrap">
+      <h2>Be the first to learn</h2>
+      <p>Weather Forward is in the works. Drop your email and we'll let you know the moment you can start reading the map for yourself.</p>
+      <form action="#" method="post">
+        <input type="email" name="email" placeholder="you@example.com" required />
+        <button type="submit">Notify me</button>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;width:100%;flex-wrap:wrap;gap:12px;">
+      <div>© 2026 Weather Forward</div>
+      <div>weatherforward.com</div>
+    </div>
+  </footer>
+</body>
+</html>
