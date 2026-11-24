@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Weather Forward — Coming soon</title>
   <meta name="description" content="Coming soon: Weather Forward is being built to help you read the weather maps you see on TV and make your own forecast with confidence." />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Weather Forward" />
+  <meta property="og:title" content="Weather Forward — Coming soon" />
+  <meta property="og:description" content="Coming soon: Weather Forward is being built to help you read the weather maps you see on TV and make your own forecast with confidence." />
+  <meta property="og:url" content="https://weatherforward.com/" />
+  <meta property="og:image" content="https://weatherforward.com/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Weather Forward logo: a navy cloud with the word WEATHER and a blue arrow pointing forward" />
+  <meta name="twitter:card" content="summary_large_image" />
   <style>
     :root {
       --bg: #0b1526;
@@ -37,11 +49,17 @@
       padding: 20px 0;
     }
     .logo {
-      font-weight: 800;
-      font-size: 1.25rem;
-      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
     }
-    .logo span { color: var(--accent); }
+    .logo img {
+      display: block;
+      height: 52px;
+      width: auto;
+      background: #fff;
+      border-radius: 10px;
+      padding: 4px 8px;
+    }
     nav a {
       color: var(--muted);
       text-decoration: none;
@@ -62,6 +80,7 @@
       color: var(--accent-2);
       background: rgba(255, 209, 102, 0.15);
       vertical-align: middle;
+      white-space: nowrap;
     }
 
     /* Hero */
@@ -265,13 +284,14 @@
     @media (max-width: 720px) {
       .steps, .phase-grid { grid-template-columns: 1fr; }
       nav a { margin-left: 16px; }
+      .logo img { height: 36px; padding: 3px 6px; border-radius: 8px; }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <div class="logo">Weather<span>Forward</span><span class="status">In development</span></div>
+      <div class="logo"><img src="/logo.png" width="640" height="276" alt="Weather Forward" /><span class="status">In development</span></div>
       <nav>
         <a href="#how">The plan</a>
         <a href="#learn">The vision</a>
