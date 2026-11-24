@@ -1,5 +1,18 @@
 {
   "name": "weatherforward",
+  "main": "src/worker.js",
   "compatibility_date": "2026-11-18",
-  "assets": { "directory": "." }
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "weatherforward-signups",
+      "database_id": "f3c32bad-c7a2-436c-b87d-6627686b1483",
+      "migrations_dir": "migrations"
+    }
+  ]
 }
