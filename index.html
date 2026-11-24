@@ -268,6 +268,12 @@
       cursor: pointer;
     }
     .signup button:hover { background: #6fd3ff; }
+    .signup button:disabled { opacity: 0.6; cursor: wait; }
+    .signup .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+    .signup .form-msg { min-height: 1.6em; margin: 18px auto 0; font-size: 0.98rem; color: var(--muted); }
+    .signup .form-msg.ok { color: var(--accent); }
+    .signup .form-msg.err { color: #ff8a80; }
+    .signup .fine { font-size: 0.85rem; margin: 10px auto 0; }
 
     footer {
       border-top: 1px solid var(--border);
@@ -382,7 +388,19 @@
   <section class="signup" id="signup">
     <div class="wrap">
       <h2>Be the first to learn</h2>
-      <p>Weather Forward is in development. Early-access sign-up opens soon, and this is where you'll be able to join.</p>
+      <p>Weather Forward is in development. Leave your email and we'll let you know when early access opens.</p>
+      <form id="signup-form" action="/api/signup" method="post" novalidate>
+        <label for="signup-email" class="hp">Email address</label>
+        <input id="signup-email" type="email" name="email" placeholder="you@example.com" autocomplete="email" required maxlength="254" />
+        <div class="hp" aria-hidden="true">
+          <label for="signup-company">Company</label>
+          <input id="signup-company" type="text" name="company" tabindex="-1" autocomplete="off" />
+        </div>
+        <input type="hidden" name="source" value="landing" />
+        <button type="submit">Notify me</button>
+      </form>
+      <p class="form-msg" id="signup-msg" role="status" aria-live="polite"></p>
+      <p class="fine">No spam. Just a note when there's something to try.</p>
     </div>
   </section>
 
@@ -392,5 +410,61 @@
       <div>weatherforward.com</div>
     </div>
   </footer>
+  <script>
+    (function () {
+      var form = document.getElementById("signup-form");
+      var msg = document.getElementById("signup-msg");
+      var input = document.getElementById("signup-email");
+      var button = form.querySelector("button");
+      var MESSAGES = {
+        "new": "You're on the list. We'll be in touch when early access opens.",
+        "exists": "You're already on the list. Thanks for the enthusiasm!",
+        "error": "Something went wrong. Please try again."
+      };
+      function show(text, kind) {
+        msg.textContent = text;
+        msg.className = "form-msg" + (kind ? " " + kind : "");
+      }
+
+      // Result from the no-JavaScript fallback redirect (?signup=new|exists|error).
+      var status = new URLSearchParams(location.search).get("signup");
+      if (status && MESSAGES[status]) {
+        show(MESSAGES[status], status === "error" ? "err" : "ok");
+        history.replaceState(null, "", location.pathname + "#signup");
+      }
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var email = input.value.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          show("Please enter a valid email address.", "err");
+          input.focus();
+          return;
+        }
+        button.disabled = true;
+        show("Signing you up…");
+        fetch(form.action, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify({
+            email: email,
+            company: form.company.value,
+            source: form.source.value
+          })
+        })
+          .then(function (res) { return res.json().catch(function () { return { ok: false }; }); })
+          .then(function (data) {
+            if (data.ok) {
+              show(MESSAGES[data.status] || MESSAGES["new"], "ok");
+              form.reset();
+            } else {
+              show(data.error || MESSAGES.error, "err");
+            }
+          })
+          .catch(function () { show(MESSAGES.error, "err"); })
+          .finally(function () { button.disabled = false; });
+      });
+    })();
+  </script>
 </body>
 </html>
