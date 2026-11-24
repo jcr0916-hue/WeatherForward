@@ -87,8 +87,8 @@ function redirect(request, status) {
   return Response.redirect(target.toString(), 303);
 }
 
-// Emails John about each new signup. Does nothing until the NOTIFY send_email binding and the
-// NOTIFY_FROM / NOTIFY_TO vars are set in wrangler.jsonc (needs Cloudflare Email Routing first).
+// Emails the site owner about each new signup. Skipped until the NOTIFY_TO secret is set
+// in the Cloudflare dashboard (it must be a verified Email Routing destination address).
 async function notifyNewSignup(env, { email, source, country }) {
   if (!env.NOTIFY || !env.NOTIFY_FROM || !env.NOTIFY_TO) return;
   try {
